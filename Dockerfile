@@ -1,6 +1,10 @@
-FROM Git-Mahesh06/website
-RUN apt-get update
-RUN apt install apache2 -y
-copy . /var/www/html
+# Use the base image provided in assignment
+FROM hshar/webapp
+
+# Copy the website code into the container
+COPY . /var/www/html
+
+# Expose port 80 (webserver)
 EXPOSE 80
-ENTRYPOINT apachectl -D FOREGROUND
+
+CMD ["apachectl", "-D", "FOREGROUND"]
