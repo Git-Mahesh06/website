@@ -1,0 +1,44 @@
+pipeline {
+    agent any
+
+    stages {
+
+        stage('Job1-Build') {
+            steps {
+                echo 'Building Docker Image'
+                sh 'sudo docker build -t abode-webapp .'
+            }
+        }
+
+        stage('Job2-Test') {
+            steps {
+                echo 'Testing Application'
+                sh '''
+                sudo docker run -d --name test-app -p 8081:80 abode-webapp
+                sudo sleep 10
+                sudo docker ps
+                sudo docker rm -f test-app
+                '''
+            }
+        }
+
+        stage('Job3-Prod') {
+            when {
+                branch 'master'
+            }
+            steps {
+                echo 'Deploying to Production'
+                sh '''
+                sudo docker rm -f prod-app || true
+                sudo docker run -d --name prod-app -p 80:80 abode-webapp
+                '''
+            }
+        }
+    }
+
+    post {
+        always {
+            echo 'Pipeline Execution Completed'
+        }
+    }
+}
