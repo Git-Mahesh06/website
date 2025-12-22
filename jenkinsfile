@@ -6,7 +6,7 @@ pipeline {
         stage('Job1-Build') {
             steps {
                 echo 'Building Docker Image'
-                sh 'sudo docker build -t abode-webapp .'
+                sh 'docker build -t abode-webapp .'
             }
         }
 
@@ -14,10 +14,10 @@ pipeline {
             steps {
                 echo 'Testing Application'
                 sh '''
-                sudo docker run -d --name test-app -p 8081:80 abode-webapp
-                sudo sleep 10
-                sudo docker ps
-                sudo docker rm -f test-app
+                docker run -d --name test-app -p 8081:80 abode-webapp
+                sleep 10
+                docker ps
+                docker rm -f test-app
                 '''
             }
         }
@@ -29,8 +29,8 @@ pipeline {
             steps {
                 echo 'Deploying to Production'
                 sh '''
-                sudo docker rm -f prod-app || true
-                sudo docker run -d --name prod-app -p 80:80 abode-webapp
+                docker rm -f prod-app || true
+                docker run -d --name prod-app -p 80:80 abode-webapp
                 '''
             }
         }
